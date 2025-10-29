@@ -180,6 +180,31 @@ minY
         canvas.draw(graphics);
     }
 
+    protected void paintMarkerTriangle(Graphics2D canvas, Double[] point){
+        canvas.setStroke(markerStroke);
+
+        double markerSize = 11;
+        double markerHeight = markerSize * 0.86602540378; // высота правильного треугольника
+
+        Point2D.Double center = xyToPoint(point[0], point[1]);
+
+        GeneralPath triangle = new GeneralPath();
+
+        double x = center.getX();
+        double y = center.getY();
+
+        triangle.moveTo(x,y - 2.0/3.0 * markerHeight); // верхняя вершина треугольника
+        triangle.lineTo(x-markerSize/2.0, y+1.0/3.0*markerHeight); // левая вершина
+        triangle.lineTo(x+markerSize/2.0, y+1.0/3.0*markerHeight); // правая вершина
+        triangle.closePath();
+
+        canvas.setPaint(Color.GREEN);
+        canvas.fill(triangle);
+        canvas.setColor(Color.BLACK);
+        canvas.draw(triangle);
+
+    }
+
     // Отображение маркеров точек, по которым рисовался график
     protected void paintMarkers(Graphics2D canvas) {
 // Шаг 1 - Установить специальное перо для черчения контуров маркеров
@@ -203,6 +228,10 @@ minY
             marker.setFrameFromCenter(center, corner);
             canvas.draw(marker); // Начертить контур маркера
             canvas.fill(marker); // Залить внутреннюю область маркера
+
+            if(Math.abs(point[1] - Math.round(point[1])) <= 0.1){
+                paintMarkerTriangle(canvas, point);
+            }
         }
     }
 

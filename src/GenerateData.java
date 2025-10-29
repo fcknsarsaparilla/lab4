@@ -4,13 +4,13 @@ import java.io.IOException;
 
 public class GenerateData {
     public static void main(String[] args) {
-        try (DataOutputStream out = new DataOutputStream(new FileOutputStream("parabola.bin"))) {
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream("abs.bin"))) {
             for (double x = -10; x <= 10; x += 0.5) {
-                double y = x * x;
+                double y = Math.abs(x);
                 out.writeDouble(x);
                 out.writeDouble(y);
             }
-            System.out.println("Файл parabola.bin успешно создан!");
+            System.out.println("Файл abs.bin успешно создан!");
         } catch (IOException e) {
             e.printStackTrace();
         }

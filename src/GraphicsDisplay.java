@@ -151,10 +151,10 @@ minY
         canvas.setStroke(oldStroke);
     }
 
-    // Отрисовка графика по прочитанным координатам
     protected void paintGraphics(Graphics2D canvas) {
 // Выбрать линию для рисования графика
-        canvas.setStroke(graphicsStroke);
+        BasicStroke newStroke = new BasicStroke(2,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10, new float[]{9,1,3,1,9},0);
+        canvas.setStroke(newStroke);
 // Выбрать цвет линии
         canvas.setColor(Color.RED);
 /* Будем рисовать линию графика как путь, состоящий из множества

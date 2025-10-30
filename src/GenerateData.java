@@ -16,8 +16,14 @@ public class GenerateData {
         }
 
         doubleBuffer.flip();
-        FileChannel fileChannel = FileChannel.open(Path.of("DataByBuffer.bin"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-        fileChannel.write(byteBuffer);
+
+        try {
+            FileChannel fileChannel = FileChannel.open(Path.of("DataByBuffer.bin"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            fileChannel.write(byteBuffer);
+            fileChannel.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -395,4 +395,16 @@ minY
         double y = maxY - point.getY() / scale;
         return new Point2D.Double(x, y);
     }
+
+
+    protected void paintSelectionRectangle(Graphics2D canvas) {
+        canvas.setStroke(selectionStroke);
+        canvas.setColor(Color.BLUE);
+        double x = Math.min(selectionStart.getX(), selectionEnd.getX());
+        double y = Math.min(selectionStart.getY(), selectionEnd.getY());
+        double width = Math.abs(selectionEnd.getX() - selectionStart.getX());
+        double height = Math.abs(selectionEnd.getY() - selectionStart.getY());
+        canvas.draw(new Rectangle2D.Double(x, y, width, height));
+    }
+
 }

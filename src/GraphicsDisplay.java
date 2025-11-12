@@ -407,4 +407,19 @@ minY
         canvas.draw(new Rectangle2D.Double(x, y, width, height));
     }
 
+
+    protected void paintCoordinates(Graphics2D canvas, Double[] point) {
+        canvas.setFont(coordinatesFont);
+        canvas.setColor(Color.BLACK);
+        String coordText = String.format("X: %.2f, Y: %.2f", point[0], point[1]);
+        int textX = (int) mousePoint.getX() + 10;
+        int textY = (int) mousePoint.getY() - 10;
+        canvas.setColor(new Color(255, 255, 255, 200));
+        Rectangle2D textBounds = coordinatesFont.getStringBounds(coordText, canvas.getFontRenderContext());
+        canvas.fillRect(textX - 2, textY - (int)textBounds.getHeight() + 2,
+                (int)textBounds.getWidth() + 4, (int)textBounds.getHeight() + 2);
+        canvas.setColor(Color.BLACK);
+        canvas.drawString(coordText, textX, textY);
+    }
+    
 }

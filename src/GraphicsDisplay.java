@@ -12,6 +12,10 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Cursor;
 @SuppressWarnings("serial")
 public class GraphicsDisplay extends JPanel {
     // Список координат точек для построения графика
@@ -30,8 +34,22 @@ public class GraphicsDisplay extends JPanel {
     private BasicStroke graphicsStroke;
     private BasicStroke axisStroke;
     private BasicStroke markerStroke;
+    private BasicStroke selectionStroke;
     // Различные шрифты отображения надписей
     private Font axisFont;
+    private Font coordinatesFont;
+
+    private double originalMinX;
+    private double originalMaxX; // координаты
+    private double originalMinY;
+    private double originalMaxY;
+
+    private Point2D.Double mousePoint;
+    private Point2D.Double selectionStart = null;
+    private Point2D.Double selectionEnd = null;
+    private boolean selecting = false;
+    private Double[] highlightedPoint = null;
+
 
     public GraphicsDisplay() {
 // Цвет заднего фона области отображения - белый
@@ -46,8 +64,12 @@ public class GraphicsDisplay extends JPanel {
 // Перо для рисования контуров маркеров
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
+
+        selectionStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,10.0f, new float[]{5,5},0.0f);
 // Шрифт для подписей осей координат
         axisFont = new Font("Serif", Font.BOLD, 36);
+        coordinatesFont = new Font("Serif", Font.BOLD, 12);
+
     }
 
     // Данный метод вызывается из обработчика элемента меню "Открыть файл с графиком"
@@ -69,6 +91,38 @@ public class GraphicsDisplay extends JPanel {
     public void setShowMarkers(boolean showMarkers) {
         this.showMarkers = showMarkers;
         repaint();
+    }
+
+
+    public void resetZoom() {
+        if (graphicsData != null && graphicsData.length > 0) {
+            minX = originalMinX;
+            maxX = originalMaxX;
+            minY = originalMinY;
+            maxY = originalMaxY;
+
+            selectionStart = null;
+            selectionEnd = null;
+            selecting = false;
+            repaint();
+        }
+    }
+
+    private void zoomToSelection() {
+        if (selectionStart != null && selectionEnd != null) {
+            Point2D.Double mathStart = pointToXY(selectionStart);
+            Point2D.Double mathEnd = pointToXY(selectionEnd);
+
+            minX = Math.min(mathStart.x, mathEnd.x);
+            maxX = Math.max(mathStart.x, mathEnd.x);
+            minY = Math.min(mathStart.y, mathEnd.y);
+            maxY = Math.max(mathStart.y, mathEnd.y);
+
+            selectionStart = null;
+            selectionEnd = null;
+            selecting = false;
+            repaint();
+        }
     }
 
     // Метод отображения всего компонента, содержащего график
@@ -335,4 +389,9 @@ minY
         dest.setLocation(src.getX() + deltaX, src.getY() + deltaY);
         return dest;
     }
-}
+
+    protected Point2D.Double pointToXY(Point2D.Double point) {
+        double x = minX + point.getX() / scale;
+        double y = maxY - point.getY() / scale;
+        return new Point2D.Double(x, y);
+    }

@@ -65,7 +65,7 @@ public class GraphicsDisplay extends JPanel {
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
 
-        selectionStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,10.0f, new float[]{5,5},0.0f);
+        selectionStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{5, 5}, 0.0f);
 // Шрифт для подписей осей координат
         axisFont = new Font("Serif", Font.BOLD, 36);
         coordinatesFont = new Font("Serif", Font.BOLD, 12);
@@ -207,7 +207,7 @@ minY
 
     protected void paintGraphics(Graphics2D canvas) {
 // Выбрать линию для рисования графика
-        BasicStroke newStroke = new BasicStroke(2,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10, new float[]{9,1,3,1,9},0);
+        BasicStroke newStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{9, 1, 3, 1, 9}, 0);
         canvas.setStroke(newStroke);
 // Выбрать цвет линии
         canvas.setColor(Color.RED);
@@ -234,7 +234,7 @@ minY
         canvas.draw(graphics);
     }
 
-    protected void paintMarkerTriangle(Graphics2D canvas, Double[] point){
+    protected void paintMarkerTriangle(Graphics2D canvas, Double[] point) {
         canvas.setStroke(markerStroke);
 
         double markerSize = 11;
@@ -247,9 +247,9 @@ minY
         double x = center.getX();
         double y = center.getY();
 
-        triangle.moveTo(x,y - 2.0/3.0 * markerHeight); // верхняя вершина треугольника
-        triangle.lineTo(x-markerSize/2.0, y+1.0/3.0*markerHeight); // левая вершина
-        triangle.lineTo(x+markerSize/2.0, y+1.0/3.0*markerHeight); // правая вершина
+        triangle.moveTo(x, y - 2.0 / 3.0 * markerHeight); // верхняя вершина треугольника
+        triangle.lineTo(x - markerSize / 2.0, y + 1.0 / 3.0 * markerHeight); // левая вершина
+        triangle.lineTo(x + markerSize / 2.0, y + 1.0 / 3.0 * markerHeight); // правая вершина
         triangle.closePath();
 
         canvas.setPaint(Color.GREEN);
@@ -283,7 +283,7 @@ minY
             canvas.draw(marker); // Начертить контур маркера
             canvas.fill(marker); // Залить внутреннюю область маркера
 
-            if(Math.abs(point[1] - Math.round(point[1])) <= 0.1){
+            if (Math.abs(point[1] - Math.round(point[1])) <= 0.1) {
                 paintMarkerTriangle(canvas, point);
             }
         }
@@ -395,3 +395,4 @@ minY
         double y = maxY - point.getY() / scale;
         return new Point2D.Double(x, y);
     }
+}

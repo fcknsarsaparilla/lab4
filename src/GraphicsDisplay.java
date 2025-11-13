@@ -89,6 +89,11 @@ public class GraphicsDisplay extends JPanel {
         repaint();
     }
 
+    public void setShowAxis(boolean showAxis) {
+        this.showAxis = showAxis;
+        repaint();
+    }
+
     public void setShowMarkers(boolean showMarkers) {
         this.showMarkers = showMarkers;
         repaint();
@@ -206,6 +211,15 @@ minY
         paintGraphics(canvas);
 // Затем (если нужно) отображаются маркеры точек, по которым строился график.
         if (showMarkers) paintMarkers(canvas);
+
+        if (selecting && selectionStart != null && selectionEnd != null) {
+            paintSelectionRectangle(canvas);
+        }
+
+// Рисуем координаты точки поверх всего
+        if (highlightedPoint != null && mousePoint != null) {
+            paintCoordinates(canvas, highlightedPoint);
+        }
 // Шаг 9 - Восстановить старые настройки холста
         canvas.setFont(oldFont);
         canvas.setPaint(oldPaint);

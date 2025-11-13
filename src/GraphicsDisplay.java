@@ -70,6 +70,9 @@ public class GraphicsDisplay extends JPanel {
         axisFont = new Font("Serif", Font.BOLD, 36);
         coordinatesFont = new Font("Serif", Font.BOLD, 12);
 
+        addMouseListener(new MouseHandler());
+        addMouseMotionListener(new MouseMotionHandler());
+
     }
 
     // Данный метод вызывается из обработчика элемента меню "Открыть файл с графиком"
@@ -421,5 +424,51 @@ minY
         canvas.setColor(Color.BLACK);
         canvas.drawString(coordText, textX, textY);
     }
-    
+
+    private class MouseHandler extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                selectionStart = new Point2D.Double(e.getX(), e.getY());
+                selectionEnd = selectionStart;
+                selecting = true;
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                resetZoom();
+            }
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1 && selecting) {
+                selectionEnd = new Point2D.Double(e.getX(), e.getY());
+                zoomToSelection();
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        }
+    }
+
+    private class MouseMotionHandler extends MouseMotionAdapter {
+        public void mouseMoved(MouseEvent e) {
+            mousePoint = new Point2D.Double(e.getX(), e.getY());
+            highlightedPoint = null;
+
+            if (graphicsData != null) {
+                for (Double[] point : graphicsData) {
+                    Point2D.Double screenPoint = xyToPoint(point[0], point[1]);
+                    if (screenPoint.distance(mousePoint) < 10) {
+                        highlightedPoint = point;
+                        break;
+                    }
+                }
+            }
+            repaint();
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            if (selecting) {
+                selectionEnd = new Point2D.Double(e.getX(), e.getY());
+                repaint();
+            }
+        }
+    }
+
 }

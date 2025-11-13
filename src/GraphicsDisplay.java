@@ -78,16 +78,14 @@ public class GraphicsDisplay extends JPanel {
     // Данный метод вызывается из обработчика элемента меню "Открыть файл с графиком"
     // главного окна приложения в случае успешной загрузки данных
     public void showGraphics(Double[][] graphicsData) {
-// Сохранить массив точек во внутреннем поле класса
         this.graphicsData = graphicsData;
-// Запросить перерисовку компонента, т.е. неявно вызвать paintComponent()
-        repaint();
-    }
 
-    // Методы-модификаторы для изменения параметров отображения графика
-// Изменение любого параметра приводит к перерисовке области
-    public void setShowAxis(boolean showAxis) {
-        this.showAxis = showAxis;
+        // СБРАСЫВАЕМ ИСХОДНЫЕ ГРАНИЦЫ ПРИ ЗАГРУЗКЕ НОВЫХ ДАННЫХ
+        originalMinX = 0;
+        originalMaxX = 0;
+        originalMinY = 0;
+        originalMaxY = 0;
+
         repaint();
     }
 
@@ -137,22 +135,29 @@ public class GraphicsDisplay extends JPanel {
         super.paintComponent(g);
 // Шаг 2 - Если данные графика не загружены (при показе компонента при запуске программы) - ничего не делать
         if (graphicsData == null || graphicsData.length == 0) return;
-// Шаг 3 - Определить минимальное и максимальное значения для координат X и Y
-// Это необходимо для определения области пространства, подлежащей отображению
-// Еѐ верхний левый угол это (minX, maxY) - правый нижний это (maxX, minY)
-        minX = graphicsData[0][0];
-        maxX = graphicsData[graphicsData.length - 1][0];
-        minY = graphicsData[0][1];
-        maxY = minY;
-// Найти минимальное и максимальное значение функции
-        for (int i = 1; i < graphicsData.length; i++) {
-            if (graphicsData[i][1] < minY) {
-                minY = graphicsData[i][1];
+//Шаг 3 - Если исходные границы еще не сохранены, вычислить и сохранить их
+        if (originalMinX == 0 && originalMaxX == 0 && originalMinY == 0 && originalMaxY == 0) {
+            minX = graphicsData[0][0];
+            maxX = graphicsData[graphicsData.length - 1][0];
+            minY = graphicsData[0][1];
+            maxY = minY;
+
+            for (int i = 1; i < graphicsData.length; i++) {
+                if (graphicsData[i][1] < minY) {
+                    minY = graphicsData[i][1];
+                }
+                if (graphicsData[i][1] > maxY) {
+                    maxY = graphicsData[i][1];
+                }
             }
-            if (graphicsData[i][1] > maxY) {
-                maxY = graphicsData[i][1];
-            }
+
+            // СОХРАНИТЯЕМ ИСХОДНЫЕ ГРАНИЦЫ
+            originalMinX = minX;
+            originalMaxX = maxX;
+            originalMinY = minY;
+            originalMaxY = maxY;
         }
+// Иначе используем текущие minX, maxX, minY, maxY (которые могли быть изменены масштабированием)
 /* Шаг 4 - Определить (исходя из размеров окна) масштабы по осям X
 и Y - сколько пикселов
 * приходится на единицу длины по X и по Y
